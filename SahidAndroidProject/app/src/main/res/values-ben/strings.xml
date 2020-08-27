@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">প্রচার বোঙ্গো</string>
+    <string name="action_settings">সেটিংস</string>
+    <string name="nav_header_title">নিউজ আপডেট</string>
+
+    <string name="Local">লোকাল নিউজ</string>
+    <string name="State">রাজ্য</string>
+    <string name="Country">দেশ</string>
+    <string name="International">আন্তর্জাতিক</string>
+    <string name="Entertainment">বিনোদন</string>
+    <string name="Sports">খেলা</string>
+    <string name="Job">কর্মক্ষেত্র</string>
+    <string name="Health">স্বাস্হ্য</string>
+    <string name="Library">গ্রন্থাগার</string>
+    <string name="Editors">সম্পাদক</string>
+    <string name="Advertisements">বিজ্ঞাপন</string>
+
+    //-----language select string
+    <string name="select_language_title">ভাষা নির্বাচন কর</string>
+    <string name="select_language_checkbox">আমার নির্বাচন মনে রাখবেন</string>
+    <string name="select_language_cancel">বাতিল</string>
+    <string name="select_language_ok">ঠিক আছে</string>
+
+    //------search popup strings
+    <string name="search_popup_title">অনুসন্ধান করুন</string>
+    <string name="search_popup_hint">এখানে লিখুন</string>
+    <string name="search_popup_cancel">বাতিল</string>
+    <string name="search_popup_search">অনুসন্ধান করুন</string>
+
+    //---activity_main strings
+    <string name="recycler_list_no_data">দেখানোর জন্য কোনও ডেটা নেই</string>
+
+    //----activity_main_profile_alert_dialog strings
+    <string name="activity_main_profile_alert_dialog_message">প্রোফাইল ভিউ আপনার জন্য উপলভ্য নয়</string>
+    <string name="activity_main_profile_alert_title">প্রোফাইল সতর্কতা!</string>
+
+    //----activity_video_home strings
+    <string name="activity_video_home_name">নাম :</string>
+    <string name="activity_video_home_name_hint">আপনার নাম প্রবেশ করুন</string>
+    <string name="activity_video_home_email">ইমেল :</string>
+    <string name="activity_video_home_email_hint">তুমার ইমেইল প্রবেশ করাও</string>
+    <string name="activity_video_home_mobile">মুঠোফোন :</string>
+    <string name="activity_video_home_mobile_hint">আপনার মোবাইল নাম্বার প্রবেশ করুন</string>
+    <string name="activity_video_home_title">শিরোনাম :</string>
+    <string name="activity_video_home_title_hint">শিরোনাম প্রবেশ করান</string>
+    <string name="activity_video_home_btn_video">ভিডিও চিত্র ধারণ করা</string>
+    <string name="activity_video_home_btn_image">চিত্র ক্যাপচার করুন</string>
+    <string name="activity_video_home_btn_browse">ব্রাউজ করুন</string>
+    <string name="activity_video_home_txt_submit">জমা দিন</string>
+
+    //---activity_profile_popup strings
+    <string name="activity_profile_popup_title">প্রোফাইল</string>
+    <string name="activity_profile_popup_name_title">নাম :</string>
+    <string name="activity_profile_popup_email_title">ইমেল :</string>
+    <string name="activity_profile_popup_mobile_title">মুঠোফোন :</string>
+</resources>
