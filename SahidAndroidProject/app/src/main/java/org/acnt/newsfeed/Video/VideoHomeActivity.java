@@ -11,16 +11,19 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -47,12 +50,22 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import org.acnt.newsfeed.Config.AndroidMultiPartEntity;
 import org.acnt.newsfeed.Config.CameraUtils;
 import org.acnt.newsfeed.Config.FileUtils;
 import org.acnt.newsfeed.Config.RealPathUtil;
 import org.acnt.newsfeed.Config.Url;
 import org.acnt.newsfeed.Home.MainActivity;
 import org.acnt.newsfeed.R;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -103,6 +116,11 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
     SharedPreferences sharedPreferences;
     Context context;
     public static String fileType = "";
+    public static String filePathForMultipart = "";
+    long totalSize = 0;
+
+    ProgressBar progressBar;
+    TextView tv_percent;
 
 
 
@@ -116,6 +134,8 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
         videoPreview = findViewById(R.id.videoPreview);
         imgPreview = findViewById(R.id.imgPreview);
         btn_browse = findViewById(R.id.btn_browse);
+        progressBar = findViewById(R.id.progressBar);
+        tv_percent = findViewById(R.id.tv_percent);
 
         ed_email = findViewById(R.id.ed_email);
         ed_mobile = findViewById(R.id.ed_mobile);
@@ -189,10 +209,12 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                         } else if (!image_video_to_base64.trim().contentEquals("")) {
                             if (fileType == "video") {
 //                            Toast.makeText(getApplicationContext(),"Video",Toast.LENGTH_LONG).show();
-                                submit_data(fileType);
+//                                submit_data(fileType);
+                               new UploadFileToServer(fileType).execute();
                             } else if (fileType == "image") {
 //                            Toast.makeText(getApplicationContext(),"Image",Toast.LENGTH_LONG).show();
-                                submit_data(fileType);
+//                                submit_data(fileType);
+                                new UploadFileToServer(fileType).execute();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Incorrect file format. Please select any video or image type file", Toast.LENGTH_LONG).show();
                             }
@@ -327,6 +349,7 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                 CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
 
                 fileType = getFileTypeFromURL(imageStoragePath);
+                filePathForMultipart = imageStoragePath;
                 Log.d("Filetype-=>",fileType);
 
                 image_video_to_base64 = getBase64FromPath(imageStoragePath); //--added on 21st aug
@@ -352,6 +375,7 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                 String file_to_base64_video = getBase64FromPath(imageStoragePath);
 
                 fileType = getFileTypeFromURL(imageStoragePath);
+                filePathForMultipart = imageStoragePath;
                 Log.d("Filetype-=>",fileType);
 
                 image_video_to_base64 = getBase64FromPath(imageStoragePath); //--added on 21st aug
@@ -393,6 +417,7 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                 Log.d("demoTest-=>",file_path);
 
                 fileType = getFileTypeFromURL(file_path);
+                filePathForMultipart = file_path;
                 Log.d("Filetype-=>",fileType);
 
                 String file_to_base64 = getBase64FromPath(file_path);
@@ -694,6 +719,166 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
     }
     //----function for checking internet connection, code ends---
 
+    //------asynctask function for submitting dada, code starts--------
+    public class UploadFileToServer extends AsyncTask<Void, Integer, String> {
+        String type;
+
+       /* LayoutInflater li = LayoutInflater.from(VideoHomeActivity.this);
+        final View dialog = li.inflate(R.layout.activity_video_upload_popup, null);
+        final ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        final TextView tv_percent = dialog.findViewById(R.id.tv_percent);
+        AlertDialog.Builder alert = new AlertDialog.Builder(VideoHomeActivity.this);
+        AlertDialog alertDialog = alert.create();*/
+
+        public UploadFileToServer(String type){
+            super();
+            this.type = type;
+            /*alert.setView(dialog);
+            alert.setCancelable(false);
+
+            alertDialog.show();*/
+        }
+        String url = Url.BasrUrl +"REST/News/addImageOrVideo";
+
+        @Override
+        protected void onPreExecute() {
+            // setting progress bar to zero
+
+            progressBar.setProgress(0);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            // Making progress bar visible
+            progressBar.setVisibility(View.VISIBLE);
+            tv_percent.setVisibility(View.VISIBLE);
+
+            // updating progress bar value
+            progressBar.setProgress(progress[0]);
+
+            // updating percentage value
+            tv_percent.setText(String.valueOf(progress[0]) + "%");
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            return uploadFile(type);
+        }
+
+        @SuppressWarnings("deprecation")
+        public String uploadFile(String type) {
+            String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+            String responseString = null;
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(url);
+
+            try {
+                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
+                        new AndroidMultiPartEntity.ProgressListener() {
+
+                            @Override
+                            public void transferred(long num) {
+                                publishProgress((int) ((num / (float) totalSize) * 100));
+                            }
+                        });
+
+                File sourceFile = new File(filePathForMultipart);
+
+                // Adding file data to http body
+                entity.addPart("file", new FileBody(sourceFile));
+                // Extra parameters if you want to pass to server
+                entity.addPart("name", new StringBody(ed_name.getText().toString()));
+                entity.addPart("email_id", new StringBody(ed_email.getText().toString()));
+                entity.addPart("mobile_number", new StringBody(ed_mobile.getText().toString()));
+                entity.addPart("video_title", new StringBody(ed_title.getText().toString()));
+                entity.addPart("device_id", new StringBody(android_id));
+                entity.addPart("type", new StringBody(type));
+
+                Log.d("typetesing-=>",type);
+
+                totalSize = entity.getContentLength();
+                httppost.setEntity(entity);
+
+                // Making server call
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity r_entity = response.getEntity();
+
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 200) {
+                    // Server response
+                    responseString = EntityUtils.toString(r_entity);
+                } else {
+                    responseString = "Error occurred! Http Status Code: "
+                            + statusCode;
+                }
+
+            } catch (ClientProtocolException e) {
+                responseString = e.toString();
+            } catch (IOException e) {
+                responseString = e.toString();
+            }
+
+            return responseString;
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("Response from server: ",result);
+
+            // showing the server response in an alert dialog
+//            showAlert(result);
+
+            super.onPostExecute(result);
+
+            try {
+                //Process os success response
+                JSONObject jsonObj = null;
+                try {
+                    String responseData = result.toString();
+                    String val = "";
+                    JSONObject resobj = new JSONObject(responseData);
+                    Log.d("getData", resobj.toString());
+
+                    if (resobj.getString("status").contentEquals("Success")) {
+//                        alertDialog.dismiss();
+                        Toast.makeText(getApplicationContext(),"Data saved successfully",Toast.LENGTH_LONG).show();
+
+                        sharedPreferences = getApplication().getSharedPreferences("ProfileDetails", Context.MODE_PRIVATE);
+                        String name = sharedPreferences.getString("name","");
+                        if(name == "") {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("name", ed_name.getText().toString());
+                            editor.putString("email", ed_email.getText().toString());
+                            editor.putString("mobile", ed_mobile.getText().toString());
+                            editor.commit();
+                        }
+                        Intent intent = new Intent(VideoHomeActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+
+                    } else {
+//                        alertDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+//                    alertDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+//                alertDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
+
+    }
+    //------asynctask function for submitting dada, code ends--------
 
     @Override
     public void onBackPressed() {
