@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">প্রচার বোঙ্গো</string>
     <string name="action_settings">সেটিংস</string>
-    <string name="nav_header_title">নিউজ আপডেট</string>
+    <string name="nav_header_title">নপ্রচার বোঙ্গো</string>
 
     <string name="Local">লোকাল নিউজ</string>
     <string name="State">রাজ্য</string>
