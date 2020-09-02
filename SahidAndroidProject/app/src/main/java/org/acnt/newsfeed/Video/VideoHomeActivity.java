@@ -19,9 +19,12 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -122,6 +125,8 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
     ProgressBar progressBar;
     TextView tv_percent;
 
+    ImageButton img_btn_home;
+
 
 
     @Override
@@ -142,6 +147,7 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
         ed_title = findViewById(R.id.ed_title);
         ed_name = findViewById(R.id.ed_name);
         txt_submit = findViewById(R.id.txt_submit);
+        img_btn_home = findViewById(R.id.img_btn_home);
 
 
         output = findViewById(R.id.tv_output);
@@ -149,6 +155,10 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
         btn_capture_image.setOnClickListener(this);
         btn_browse.setOnClickListener(this);
         txt_submit.setOnClickListener(this);
+        img_btn_home.setOnClickListener(this);
+
+        txt_submit.setClickable(true);
+        txt_submit.setAlpha(1.0f);
 
         // Checking availability of the camera
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -194,39 +204,52 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
             case R.id.txt_submit:
-                if(isConnectingToInternet(VideoHomeActivity.this)) {
-                    if (ed_name.getText().toString().trim().isEmpty() ||
-                            ed_email.getText().toString().trim().isEmpty() ||
-                            ed_title.getText().toString().trim().isEmpty() ||
-                            ed_mobile.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "Field cannot be left blank", Toast.LENGTH_LONG).show();
-                    } else if (!ed_name.getText().toString().trim().isEmpty() ||
-                            !ed_email.getText().toString().trim().isEmpty() ||
-                            !ed_title.getText().toString().trim().isEmpty() ||
-                            !ed_mobile.getText().toString().trim().isEmpty()) {
-                        if (image_video_to_base64.trim().contentEquals("")) {
-                            Toast.makeText(getApplicationContext(), "Please upload file (image/video)", Toast.LENGTH_LONG).show();
-                        } else if (!image_video_to_base64.trim().contentEquals("")) {
-                            if (fileType == "video") {
+                if(txt_submit.isClickable()) {
+                    if (isConnectingToInternet(VideoHomeActivity.this)) {
+                        if (ed_name.getText().toString().trim().isEmpty() ||
+                                ed_email.getText().toString().trim().isEmpty() ||
+                                ed_title.getText().toString().trim().isEmpty() ||
+                                ed_mobile.getText().toString().trim().isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "Field cannot be left blank", Toast.LENGTH_LONG).show();
+                        } else if (!ed_name.getText().toString().trim().isEmpty() ||
+                                !ed_email.getText().toString().trim().isEmpty() ||
+                                !ed_title.getText().toString().trim().isEmpty() ||
+                                !ed_mobile.getText().toString().trim().isEmpty()) {
+                            if (image_video_to_base64.trim().contentEquals("")) {
+                                Toast.makeText(getApplicationContext(), "Please upload file (image/video)", Toast.LENGTH_LONG).show();
+                            } else if (!image_video_to_base64.trim().contentEquals("")) {
+                                if (fileType == "video") {
 //                            Toast.makeText(getApplicationContext(),"Video",Toast.LENGTH_LONG).show();
 //                                submit_data(fileType);
-                               new UploadFileToServer(fileType).execute();
-                            } else if (fileType == "image") {
+                                    txt_submit.setClickable(false);
+                                    txt_submit.setAlpha(0.5f);
+                                    new UploadFileToServer(fileType).execute();
+                                } else if (fileType == "image") {
 //                            Toast.makeText(getApplicationContext(),"Image",Toast.LENGTH_LONG).show();
 //                                submit_data(fileType);
-                                new UploadFileToServer(fileType).execute();
+                                    txt_submit.setClickable(false);
+                                    txt_submit.setAlpha(0.5f);
+                                    new UploadFileToServer(fileType).execute();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Incorrect file format. Please select any video or image type file", Toast.LENGTH_LONG).show();
+                                }
                             } else {
-                                Toast.makeText(getApplicationContext(), "Incorrect file format. Please select any video or image type file", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "No internet connection. Please enable it", Toast.LENGTH_LONG).show();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(),"No internet connection. Please enable it",Toast.LENGTH_LONG).show();
+                }else if(!txt_submit.isClickable()){
+                    Toast.makeText(getApplicationContext(), "Please wait while submitting data...", Toast.LENGTH_LONG).show();
                 }
+                break;
+            case R.id.img_btn_home:
+                Intent intent = new Intent(VideoHomeActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -511,6 +534,8 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
             startActivityForResult(
                     Intent.createChooser(intent, "Select a File to Upload"),
                     FILE_SELECT_CODE);
+
+//            startActivityForResult(intent, FILE_SELECT_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             // Potentially direct the user to the Market with a Dialog
             Toast.makeText(this, "Please install a File Manager.",
@@ -863,15 +888,21 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                     } else {
 //                        alertDialog.dismiss();
                         Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                        txt_submit.setClickable(true);
+                        txt_submit.setAlpha(1.0f);
                     }
                 } catch (JSONException e) {
 //                    alertDialog.dismiss();
+                    txt_submit.setClickable(true);
+                    txt_submit.setAlpha(1.0f);
                     Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
 
             } catch (Exception e) {
 //                alertDialog.dismiss();
+                txt_submit.setClickable(true);
+                txt_submit.setAlpha(1.0f);
                 Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
@@ -886,5 +917,15 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent(VideoHomeActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    //========following function is to resign keyboard on touching anywhere in the screen
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

@@ -1,5 +1,6 @@
 package org.acnt.newsfeed.Home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,12 +23,14 @@ import java.io.IOException;
 
 public class NewsContentDetails extends AppCompatActivity {
 
+    ImageButton img_btn_home;
     WebView webView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_content_details);
         webView = (WebView) findViewById(R.id.webView);
+        img_btn_home = findViewById(R.id.img_btn_home);
 
             int SDK_INT = android.os.Build.VERSION.SDK_INT;
             if (SDK_INT > 8)
@@ -41,6 +45,14 @@ public class NewsContentDetails extends AppCompatActivity {
         Log.d("newsurl-=>",CustomMainActivityAdapter.CustomMainActivityAdapter_news_url.trim());
         startWebView(CustomMainActivityAdapter.CustomMainActivityAdapter_news_url);
 
+        img_btn_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewsContentDetails.this,MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
 
     }
 
