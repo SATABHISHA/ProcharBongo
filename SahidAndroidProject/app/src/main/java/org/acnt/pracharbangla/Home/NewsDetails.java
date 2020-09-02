@@ -1,13 +1,7 @@
-package org.acnt.newsfeed.Home;
+package org.acnt.pracharbangla.Home;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -16,16 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.text.HtmlCompat;
 
 import com.squareup.picasso.Picasso;
 
-import org.acnt.newsfeed.R;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.acnt.pracharbangla.R;
 
 public class NewsDetails extends AppCompatActivity {
     TextView tv_news_headline, tv_news_body;

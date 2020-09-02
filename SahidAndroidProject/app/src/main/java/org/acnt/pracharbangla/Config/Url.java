@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Config;
+package org.acnt.pracharbangla.Config;
 
 public class Url {
    public static String BasrUrl = "http://news.webolaf.com/";

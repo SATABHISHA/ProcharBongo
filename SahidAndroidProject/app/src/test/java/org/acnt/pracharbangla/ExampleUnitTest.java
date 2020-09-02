@@ -1,4 +1,4 @@
-package org.acnt.newsfeed;
+package org.acnt.pracharbangla;
 
 import org.junit.Test;
 

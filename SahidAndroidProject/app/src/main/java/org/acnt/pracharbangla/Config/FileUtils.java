@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Config;
+package org.acnt.pracharbangla.Config;
 
 import android.content.Context;
 import android.database.Cursor;

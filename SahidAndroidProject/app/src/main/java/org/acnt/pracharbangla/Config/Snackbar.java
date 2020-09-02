@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Config;
+package org.acnt.pracharbangla.Config;
 
 import android.view.View;
 import android.widget.TextView;

@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Config;
+package org.acnt.pracharbangla.Config;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;

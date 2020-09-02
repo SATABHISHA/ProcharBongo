@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Config;
+package org.acnt.pracharbangla.Config;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,8 +15,8 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
-import org.acnt.newsfeed.BuildConfig;
-import org.acnt.newsfeed.Video.VideoHomeActivity;
+import org.acnt.pracharbangla.BuildConfig;
+import org.acnt.pracharbangla.Video.VideoHomeActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

@@ -1,10 +1,9 @@
-package org.acnt.newsfeed.Home;
+package org.acnt.pracharbangla.Home;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -14,12 +13,9 @@ import android.widget.ImageButton;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.acnt.newsfeed.R;
+import org.acnt.pracharbangla.R;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
 
 public class NewsContentDetails extends AppCompatActivity {
 

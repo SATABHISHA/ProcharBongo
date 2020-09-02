@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.service;
+package org.acnt.pracharbangla.service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,8 +18,8 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.acnt.newsfeed.Home.MainActivity;
-import org.acnt.newsfeed.R;
+import org.acnt.pracharbangla.Home.MainActivity;
+import org.acnt.pracharbangla.R;
 
 import java.util.Map;
 

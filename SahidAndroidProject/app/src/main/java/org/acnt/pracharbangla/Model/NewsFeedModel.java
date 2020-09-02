@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Model;
+package org.acnt.pracharbangla.Model;
 
 public class NewsFeedModel {
     String id, postTitle, postImage, category, cid, PostDetails, postingdate, url;

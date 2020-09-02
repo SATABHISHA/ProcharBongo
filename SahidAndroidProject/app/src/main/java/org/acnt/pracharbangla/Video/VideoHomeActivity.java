@@ -1,4 +1,4 @@
-package org.acnt.newsfeed.Video;
+package org.acnt.pracharbangla.Video;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -18,7 +18,6 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -53,13 +52,13 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import org.acnt.newsfeed.Config.AndroidMultiPartEntity;
-import org.acnt.newsfeed.Config.CameraUtils;
-import org.acnt.newsfeed.Config.FileUtils;
-import org.acnt.newsfeed.Config.RealPathUtil;
-import org.acnt.newsfeed.Config.Url;
-import org.acnt.newsfeed.Home.MainActivity;
-import org.acnt.newsfeed.R;
+import org.acnt.pracharbangla.Config.AndroidMultiPartEntity;
+import org.acnt.pracharbangla.Config.CameraUtils;
+import org.acnt.pracharbangla.Config.FileUtils;
+import org.acnt.pracharbangla.Config.RealPathUtil;
+import org.acnt.pracharbangla.Config.Url;
+import org.acnt.pracharbangla.Home.MainActivity;
+import org.acnt.pracharbangla.R;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;

@@ -1,36 +1,26 @@
-package org.acnt.newsfeed.Home;
+package org.acnt.pracharbangla.Home;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import org.acnt.newsfeed.Config.Url;
-import org.acnt.newsfeed.Model.NewsFeedModel;
-import org.acnt.newsfeed.R;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.acnt.pracharbangla.Model.NewsFeedModel;
+import org.acnt.pracharbangla.R;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CustomMainActivityAdapter extends RecyclerView.Adapter<CustomMainActivityAdapter.MyViewHolder> {
     public LayoutInflater inflater;
