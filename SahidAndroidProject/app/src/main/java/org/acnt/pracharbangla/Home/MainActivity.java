@@ -27,9 +27,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -81,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView tv_nodata;
     public static  CustomMainActivityAdapter customMainActivityAdapter;
     static int popup_flag = 0;
-    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences, sharedPreferences_one_time_register;
     ImageButton imgbtn_search, imgbtn_home, imgbtn_add, imgbtn_profile;
     Context context;
 
@@ -150,6 +157,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 open_pop_up();
             }
         }
+
+        //----added on 3rd sept,starts
+        sharedPreferences_one_time_register = getApplication().getSharedPreferences("RegistrationDetails", Context.MODE_PRIVATE);
+        String onetime_register_check = sharedPreferences_one_time_register.getString("onetime_register","");
+        if(onetime_register_check == ""){
+            register_device_info();
+        }
+        //----added on 3rd sept,ends
 
         imgbtn_search.setOnClickListener(this);
         imgbtn_home.setOnClickListener(this);
@@ -820,4 +835,109 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .check();
     }
     //-------added for file permission on 7th july, code ends
+
+
+    //-----function to save device id and fcm token using volley, code starts (added on 3rd sept)-------
+    public void register_device_info(){
+        String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        final JSONObject DocumentElementobj = new JSONObject();
+        final ProgressDialog loading = ProgressDialog.show(this, "Loading", "Please wait...", true, false);
+        try {
+            DocumentElementobj.put("device_id", android_id);
+            // Get token
+            context = MainActivity.this;
+            FirebaseApp.initializeApp(context);
+            DocumentElementobj.put("fcm_token", FirebaseInstanceId.getInstance().getToken());
+
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        Log.d("JsonObjecttoken-=>",DocumentElementobj.toString());
+        JsonObjectRequest request_json = null;
+        String url = Url.BasrUrl +"REST/News/save_apk_info";
+        Log.d("newsurl-=>",url);
+        try {
+            request_json = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(DocumentElementobj.toString()),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                //Process os success response
+                                JSONObject jsonObj = null;
+                                try {
+                                    String responseData = response.toString();
+                                    String val = "";
+                                    JSONObject resobj = new JSONObject(responseData);
+                                    Log.d("getData", resobj.toString());
+
+                                    if (resobj.getString("status").contentEquals("success")) {
+                                        loading.dismiss();
+                                        Toast.makeText(getApplicationContext(),"Data saved successfully",Toast.LENGTH_LONG).show();
+
+                                        sharedPreferences_one_time_register = getApplication().getSharedPreferences("RegistrationDetails", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences_one_time_register.edit();
+                                        editor.putString("onetime_register", "true");
+                                        editor.commit();
+
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Unable to register your device", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    loading.dismiss();
+                                    Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
+
+                            } catch (Exception e) {
+                                loading.dismiss();
+                                Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    loading.dismiss();
+                    if (error instanceof NetworkError) {
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                    } else if (error instanceof ServerError) {
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                    } else if (error instanceof AuthFailureError) {
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                    } else if (error instanceof ParseError) {
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                    } else if (error instanceof NoConnectionError) {
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(), "No Internet Connection. Please check your internet connection.", Toast.LENGTH_LONG).show();
+                    } else if (error instanceof TimeoutError) {
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(),
+                                "Oops. Session Timeout!",
+                                Toast.LENGTH_LONG).show();
+                    }else{
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_LONG).show();
+                    }
+//                    VolleyLog.e("Error: ", error.getMessage());
+                }
+            });
+            request_json.setRetryPolicy(new DefaultRetryPolicy(10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(request_json);
+        }catch (JSONException e){
+            loading.dismiss();
+            Toast.makeText(getApplicationContext(), "Internal Error Occurred", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+    //-----function to save device id and fcm token using volley, code ends-------
 }
