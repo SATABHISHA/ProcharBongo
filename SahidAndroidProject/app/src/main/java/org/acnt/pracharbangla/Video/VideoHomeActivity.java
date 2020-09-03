@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,6 +127,8 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
 
     ImageButton img_btn_home;
 
+    LinearLayout ll_name, ll_email, ll_mobile;
+
 
 
     @Override
@@ -147,6 +150,10 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
         ed_name = findViewById(R.id.ed_name);
         txt_submit = findViewById(R.id.txt_submit);
         img_btn_home = findViewById(R.id.img_btn_home);
+
+        ll_name = findViewById(R.id.ll_name);
+        ll_email = findViewById(R.id.ll_email);
+        ll_mobile = findViewById(R.id.ll_mobile);
 
 
         output = findViewById(R.id.tv_output);
@@ -691,6 +698,10 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
             ed_mobile.setClickable(false);
             ed_mobile.setFocusable(false);
             ed_mobile.setFocusableInTouchMode(false);
+
+            ll_name.setVisibility(View.GONE);
+            ll_email.setVisibility(View.GONE);
+            ll_mobile.setVisibility(View.GONE);
         }else{
             ed_name.setClickable(true);
             ed_name.setFocusable(true);
@@ -814,9 +825,18 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                 // Adding file data to http body
                 entity.addPart("file", new FileBody(sourceFile));
                 // Extra parameters if you want to pass to server
-                entity.addPart("name", new StringBody(ed_name.getText().toString()));
-                entity.addPart("email_id", new StringBody(ed_email.getText().toString()));
-                entity.addPart("mobile_number", new StringBody(ed_mobile.getText().toString()));
+                sharedPreferences = getApplication().getSharedPreferences("ProfileDetails", Context.MODE_PRIVATE);
+                String name = sharedPreferences.getString("name","");
+                if(name != "") {
+                    entity.addPart("name", new StringBody(sharedPreferences.getString("name","")));
+                    entity.addPart("email_id", new StringBody(sharedPreferences.getString("email","")));
+                    entity.addPart("mobile_number", new StringBody(sharedPreferences.getString("mobile","")));
+                }else{
+                    entity.addPart("name", new StringBody(ed_name.getText().toString()));
+                    entity.addPart("email_id", new StringBody(ed_email.getText().toString()));
+                    entity.addPart("mobile_number", new StringBody(ed_mobile.getText().toString()));
+                }
+
                 entity.addPart("video_title", new StringBody(ed_title.getText().toString()));
                 entity.addPart("device_id", new StringBody(android_id));
                 entity.addPart("type", new StringBody(type));
