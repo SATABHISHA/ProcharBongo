@@ -1,6 +1,7 @@
 package org.acnt.pracharbangla.Home;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -62,8 +63,20 @@ public class NewsContentDetails extends AppCompatActivity {
 
             //If you will not use this method url links are opeen in new brower not in webview
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+//                view.loadUrl(url);
+                if(url != null && url.startsWith("whatsapp://"))
+                {
+                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    return true;
+
+                }/*else if(url != null && url.startsWith("facebook.com")){
+                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    return true;
+                }*/else
+                {
+                    return false;
+                }
+//                return true;
             }
 
             //Show loader on url load
