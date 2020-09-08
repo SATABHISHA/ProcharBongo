@@ -230,12 +230,16 @@ public class VideoHomeActivity extends AppCompatActivity implements View.OnClick
                                     txt_submit.setClickable(false);
                                     txt_submit.setAlpha(0.5f);
                                     new UploadFileToServer(fileType).execute();
+
+//                                    Toast.makeText(getApplicationContext(),ed_title.getText().toString(),Toast.LENGTH_LONG).show(); //--for testing
                                 } else if (fileType == "image") {
 //                            Toast.makeText(getApplicationContext(),"Image",Toast.LENGTH_LONG).show();
 //                                submit_data(fileType);
                                     txt_submit.setClickable(false);
                                     txt_submit.setAlpha(0.5f);
                                     new UploadFileToServer(fileType).execute();
+
+//                                    Toast.makeText(getApplicationContext(),ed_title.getText().toString(),Toast.LENGTH_LONG).show(); //--for testing
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Incorrect file format. Please select any video or image type file", Toast.LENGTH_LONG).show();
                                 }
