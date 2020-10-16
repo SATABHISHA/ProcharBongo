@@ -54,7 +54,7 @@ public class CustomMainActivityAdapter extends RecyclerView.Adapter<CustomMainAc
         holder.tv_headline.setText(newsFeedModelArrayList.get(position).getPostTitle());
 //        holder.tv_body.setText(newsFeedModelArrayList.get(position).getPostDetails());
 //        holder.tv_body.setText(android.text.Html.fromHtml(newsFeedModelArrayList.get(position).getPostDetails()).toString());
-        holder.tv_posting_date.setText("Posted on "+newsFeedModelArrayList.get(position).getPostingdate());
+//        holder.tv_posting_date.setText("Posted on "+newsFeedModelArrayList.get(position).getPostingdate());
         Picasso.with(context).load(newsFeedModelArrayList.get(position).getPostImage().trim()).networkPolicy(NetworkPolicy.NO_CACHE).fit().into(holder.img_view);
 //        Picasso.with(context).load(Url.BasrUrl+"admin/postimages/"+newsFeedModelArrayList.get(position).getPostImage()).into(holder.img_view);
 //        Picasso.with(context).load("http://news.webolaf.com/admin/postimages/a0023c09173ba55038dccca3240d8002.jpg").into(holder.img_view);
@@ -95,7 +95,7 @@ public class CustomMainActivityAdapter extends RecyclerView.Adapter<CustomMainAc
         if(row_index == position){
             holder.tv_headline.setTextColor(Color.parseColor("#CC0000"));
         }else{
-            holder.tv_headline.setTextColor(Color.parseColor("#8A8989"));
+            holder.tv_headline.setTextColor(Color.parseColor("#46B11F"));
         }
     }
 
@@ -115,7 +115,7 @@ public class CustomMainActivityAdapter extends RecyclerView.Adapter<CustomMainAc
         public MyViewHolder(final View itemView) {
             super(itemView);
             tv_headline = itemView.findViewById(R.id.tv_headline);
-            tv_posting_date = itemView.findViewById(R.id.tv_posting_date);
+//            tv_posting_date = itemView.findViewById(R.id.tv_posting_date);
             img_view = itemView.findViewById(R.id.img_view);
             relative_layout = itemView.findViewById(R.id.relative_layout);
 

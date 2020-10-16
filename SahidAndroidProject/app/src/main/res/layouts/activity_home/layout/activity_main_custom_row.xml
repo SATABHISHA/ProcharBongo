@@ -42,7 +42,7 @@
                 android:layout_below="@id/img_view"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="#8A8989"
+                android:textColor="#46B11F"
                 android:text="hebdg bebe bdbdheg bdbeg bdgb"/>
         </RelativeLayout>
         <LinearLayout
@@ -53,7 +53,7 @@
             android:orientation="vertical"
             android:layout_marginTop="10dp"
             android:background="#c2c2c2"/>
-        <RelativeLayout
+        <!--<RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#F3F2F2">
@@ -70,7 +70,7 @@
             android:textSize="18sp"
             android:ellipsize="end"
             android:text="hebdg bebe bdbdheg bdbeg bdgb"/>
-        </RelativeLayout>
+        </RelativeLayout> -->
     </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
